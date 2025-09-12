@@ -6,9 +6,15 @@ import './App.css';
  * CRA exposes env variables prefixed with REACT_APP_.
  */
 const getBackendBaseUrl = () => {
-  // If provided, use env var. Otherwise default to same-origin relative path.
-  // In deployment, you can set REACT_APP_BACKEND_BASE_URL to the backend URL.
-  return process.env.REACT_APP_BACKEND_BASE_URL || '';
+  // If provided, use env var. Otherwise fall back to known backend base in this environment.
+  // In deployment, set REACT_APP_BACKEND_BASE_URL to the backend URL.
+  // Note: Backend docs are at /docs on port 3001; actual API base is the host without /docs.
+  const envUrl = process.env.REACT_APP_BACKEND_BASE_URL;
+  if (envUrl && envUrl.trim()) return envUrl.trim();
+
+  // Default to the running backend URL base in this environment.
+  // This avoids calling same-origin (port 3000) which would 404 for /answer.
+  return 'https://vscode-internal-15576-beta.beta01.cloud.kavia.ai:3001';
 };
 
 // PUBLIC_INTERFACE
